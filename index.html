@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pryv AI</title>
+    <link rel="icon" type="image/jpeg" href="public/newlogo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        #scene-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2a0757;
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            font-size: 1.5em;
+            z-index: 1000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+        }
+
+        .welcome-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .welcome-text {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.4em;
+            opacity: 0.9;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes buttonPulse {
+            0% { 
+                box-shadow: 0 0 20px rgba(139, 69, 19, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(139, 69, 19, 0.6);
+                transform: scale(1.02);
+            }
+            100% { 
+                box-shadow: 0 0 20px rgba(139, 69, 19, 0.4);
+                transform: scale(1);
+            }
+        }
+
+        #docs-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #docs-menu.visible {
+            display: flex;
+        }
+
+        #agent-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #agent-menu.visible {
+            display: flex;
+        }
+
+        .newspaper {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: #2a0757;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .newspaper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .newspaper-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .newspaper-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 4em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .newspaper-subtitle {
+            font-style: italic;
+            color: #ffffff;
+            font-size: 1.4em;
+            margin-top: 10px;
+        }
+
+        .newspaper-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .section {
+            break-inside: avoid;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 1.8em;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #ffffff;
+            text-align: justify;
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: 400;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2em;
+            color: #ffffff;
+            text-align: center;
+            margin: 30px 0;
+            padding: 0 40px;
+        }
+
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #ffffff;
+        }
+
+        .feature-list strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .newspaper strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .agent-interface strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        #agent-menu strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .warning-text {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 20px;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2em;
+            color: rgba(139, 69, 19, 0.6);
+            font-style: italic;
+        }
+
+        .page-number.left {
+            left: 40px;
+        }
+
+        .page-number.right {
+            right: 40px;
+        }
+
+        .page-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10000;
+        }
+
+        .page-button {
+            padding: 10px 20px;
+            background: rgba(244, 228, 188, 0.9);
+            border: 2px solid #ff7f50;
+            color: #ff7f50;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .page-button:hover {
+            background: #ff7f50;
+            color: #f4e4bc;
+        }
+
+        .page-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(42, 7, 87, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(42, 7, 87, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(42, 7, 87, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .audio-control:hover {
+            background: rgba(42, 7, 87, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .audio-control.muted {
+            opacity: 0.5;
+        }
+
+        /* Style pour le menu social */
+        #social-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #social-menu.visible {
+            display: flex;
+        }
+
+        .social-mirror {
+            width: 90%;
+            max-width: 800px;
+            height: auto;
+            min-height: 600px;
+            background: #2a0757;
+            padding: 40px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .social-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .social-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 3em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffffff;
+        }
+
+        .social-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Turn.js specific styles */
+        #newspaper {
+            margin: 0 auto;
+        }
+
+        .turn-page {
+            background-color: #f4e4bc !important;
+        }
+
+        .turn-page-wrapper {
+            background-color: #f4e4bc !important;
+        }
+
+        @font-face {
+            font-family: 'UnifrakturMaguntia';
+            src: url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+        }
+
+        @media (max-width: 1200px) {
+            .newspaper-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Add the fixed logo style */
+        .corner-logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .corner-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Papers Selection Menu Styles */
+        #papers-selection-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #papers-selection-menu.visible {
+            display: flex;
+        }
+
+        .papers-selection {
+            width: 90%;
+            max-width: 900px;
+            background: #2a0757;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .selection-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .selection-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 3em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .selection-subtitle {
+            font-style: italic;
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .selection-options {
+            display: flex;
+            justify-content: space-around;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(20, 20, 20, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(20, 20, 20, 0.5);
+        }
+
+        .option-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .option-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.5em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .option-description {
+            font-size: 1em;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .selection-footer {
+            text-align: center;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            padding-top: 20px;
+        }
+
+        /* Team Menu Styles */
+        #team-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #team-menu.visible {
+            display: flex;
+        }
+
+        .team-interface {
+            width: 90%;
+            max-width: 1200px;
+            height: auto;
+            min-height: 600px;
+            background: #2a0757;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .team-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 3em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .team-subtitle {
+            font-style: italic;
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .team-content {
+            flex: 1;
+        }
+
+        .team-section {
+            margin-bottom: 40px;
+        }
+
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .member-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(20, 20, 20, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .member-avatar {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .member-name {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.3em;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .member-role {
+            font-size: 1em;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .status-value {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-value.active {
+            background: rgba(0, 255, 0, 0.2);
+            color: #006600;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+        }
+
+        .contact-info p {
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .contact-link {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .team-footer {
+            text-align: center;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .back-button, .close-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .back-button:hover, .close-button:hover {
+            background: rgba(20, 20, 20, 0.2);
+            border-color: rgba(20, 20, 20, 0.5);
+        }
+
+        /* Tokenomics Menu Styles */
+        #tokenomics-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #tokenomics-menu.visible {
+            display: flex;
+        }
+
+        .tokenomics-interface {
+            width: 90%;
+            max-width: 1000px;
+            height: auto;
+            min-height: 500px;
+            background: #2a0757;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(42, 7, 87, 0.6);
+            background-image: 
+                linear-gradient(135deg, #000000 0%, #2a0757 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .tokenomics-interface::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tokenomics-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .tokenomics-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 3em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .tokenomics-subtitle {
+            font-style: italic;
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .tokenomics-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tokenomics-section {
+            margin-bottom: 40px;
+        }
+
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .distribution-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(20, 20, 20, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .distribution-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .distribution-label {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.3em;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .distribution-description {
+            font-size: 1em;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .taxes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tax-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .tax-type {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.4em;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .tax-breakdown {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .tax-breakdown span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .economic-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-top: 5px;
+        }
+
+        .feature-content h3 {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.2em;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature-content p {
+            font-size: 0.95em;
+            color: #ffffff;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .tokenomics-footer {
+            text-align: center;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Updated Team Member Styles */
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 2px solid rgba(20, 20, 20, 0.3);
+        }
+
+        .member-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.1em;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .member-bio {
+            font-size: 0.9em;
+            color: #ffffff;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        /* Menu Navigation Styles */
+        .menu-close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(42, 7, 87, 0.95);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10002;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .menu-close-btn:hover {
+            background: rgba(42, 7, 87, 1);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(42, 7, 87, 0.9);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10001;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .menu-nav-arrow:hover {
+            background: rgba(42, 7, 87, 1);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-nav-left {
+            left: 30px;
+        }
+
+        .menu-nav-right {
+            right: 30px;
+        }
+
+        /* Ensure menu containers have relative positioning for absolute positioning of nav elements */
+        .newspaper, .team-interface, .tokenomics-interface, .papers-selection {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="scene-container"></div>
+    <img src="public/newlogo.jpg" alt="Pryv AI Logo" class="corner-logo">
+    <div class="loading-screen">
+        <img src="public/newlogo.jpg" alt="Pryv AI Logo" class="welcome-logo">
+        <h1 class="welcome-text">Welcome to Pryv AI</h1>
+        <p class="welcome-subtitle">When systems are built to hide, you need one built to see</p>
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Background Audio -->
+    <audio id="background-audio" preload="metadata" loop style="display: none;">
+        <source src="sound/noir-ambience.mp3" type="audio/mpeg">
+        <source src="sound/noir-ambience.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Paper Sound Effect -->
+    <audio id="paper-sound" preload="auto" style="display: none;">
+        <source src="sound/paper.mp3" type="audio/mpeg">
+        <source src="sound/paper.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Glass Sound Effect -->
+    <audio id="glass-sound" preload="auto" style="display: none;">
+        <source src="sound/glass.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Typewriter Sound Effect -->
+    <audio id="typewrite-sound" preload="auto" style="display: none;">
+        <source src="sound/typewriter.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Agent Sound Effect -->
+    <audio id="agent-sound" preload="auto" style="display: none;">
+        <source src="sound/agent.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Audio Control Button -->
+    <button id="audio-control" class="audio-control" title="Click to start music">🎵</button>
+
+
+
+    <script>
+        // Simple audio control - inline to ensure elements are available
+        (function() {
+            const audio = document.getElementById('background-audio');
+            const paperSound = document.getElementById('paper-sound');
+            const glassSound = document.getElementById('glass-sound');
+            const typewriteSound = document.getElementById('typewrite-sound');
+            const agentSound = document.getElementById('agent-sound');
+            const button = document.getElementById('audio-control');
+            let playing = false;
+            let hasInteracted = false;
+            
+            if (audio && button) {
+                audio.volume = 0.075; // Reduced by half again
+                
+                // Initialize paper sound
+                if (paperSound) {
+                    paperSound.volume = 0.7;
+                    paperSound.load(); // Preload
+                }
+                
+                // Initialize glass sound
+                if (glassSound) {
+                    glassSound.volume = 0.6;
+                    glassSound.load(); // Preload
+                }
+                
+                // Initialize typewriter sound
+                if (typewriteSound) {
+                    typewriteSound.volume = 0.5;
+                    typewriteSound.load(); // Preload
+                }
+                
+                // Initialize agent sound
+                if (agentSound) {
+                    agentSound.volume = 0.7;
+                    agentSound.load(); // Preload
+                }
+                
+                function updateButtonState() {
+                    if (playing) {
+                        button.textContent = '🔇';
+                        button.title = 'Stop Music';
+                        button.classList.remove('muted');
+                    } else {
+                        button.textContent = '🎵';
+                        button.title = 'Start Music';
+                        button.classList.add('muted');
+                    }
+                }
+                
+                function startMusic() {
+                    audio.play().then(() => {
+                        playing = true;
+                        updateButtonState();
+                    }).catch(() => {
+                        playing = false;
+                        updateButtonState();
+                    });
+                }
+                
+                function stopMusic() {
+                    audio.pause();
+                    playing = false;
+                    updateButtonState();
+                }
+                
+                // Global click handler - start music on ANY click if not started yet
+                function handleClick(e) {
+                    if (!hasInteracted) {
+                        hasInteracted = true;
+                        startMusic();
+                    }
+                }
+                
+                // Button click handler
+                button.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (!hasInteracted) {
+                        hasInteracted = true;
+                    }
+                    
+                    if (playing) {
+                        stopMusic();
+                    } else {
+                        startMusic();
+                    }
+                };
+                
+                // Add click listener to document
+                document.addEventListener('click', handleClick);
+                
+                // Initialize button state
+                updateButtonState();
+                
+                // Try autoplay immediately
+                audio.play().then(() => {
+                    playing = true;
+                    hasInteracted = true;
+                    updateButtonState();
+                }).catch(() => {
+                    // Autoplay failed - wait for user interaction
+                    playing = false;
+                    updateButtonState();
+                });
+            }
+        })();
+    </script>
+
+
+
+    <div id="docs-menu">
+        <button class="close-button">&times;</button>
+        <div class="menu-content">
+            <div class="doc-section">
+                <h2>Documentation</h2>
+                <p>Welcome to our project documentation.</p>
+            </div>
+            <div class="doc-section">
+                <h2>Getting Started</h2>
+                <p>This is a 3D interactive environment where you can explore various documents and features.</p>
+            </div>
+            <div class="doc-section">
+                <h2>Navigation</h2>
+                <p>- Click and drag to look around</p>
+                <p>- Hover over documents to highlight them</p>
+                <p>- Click on documents to view their contents</p>
+            </div>
+            <div class="doc-section">
+                <h2>Features</h2>
+                <p>- Interactive 3D Environment</p>
+                <p>- Document Viewer</p>
+                <p>- Dynamic Lighting</p>
+                <p>- Responsive Design</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+</html> 

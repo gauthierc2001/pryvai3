@@ -1,0 +1,11 @@
+Model Information:
+* title:	Typewriter
+* source:	https://sketchfab.com/3d-models/typewriter-c212b517cbdd4fa1930ed31a45670d39
+* author:	metrosp (https://sketchfab.com/metrosp)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Typewriter" (https://sketchfab.com/3d-models/typewriter-c212b517cbdd4fa1930ed31a45670d39) by metrosp (https://sketchfab.com/metrosp) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

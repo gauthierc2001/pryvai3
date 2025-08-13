@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location (uncomment and update if you have a sitemap)
+# Sitemap: https://your-username.github.io/pryvai/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

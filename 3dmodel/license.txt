@@ -1,0 +1,11 @@
+Model Information:
+* title:	Noir
+* source:	https://sketchfab.com/3d-models/noir-f479fada84c54a4e897cc8b6fa560355
+* author:	daniilzaharov871 (https://sketchfab.com/daniilzaharov871)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Noir" (https://sketchfab.com/3d-models/noir-f479fada84c54a4e897cc8b6fa560355) by daniilzaharov871 (https://sketchfab.com/daniilzaharov871) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

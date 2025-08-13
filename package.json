@@ -1,0 +1,44 @@
+{
+  "name": "pryvai",
+  "version": "1.0.0",
+  "description": "Interactive 3D environment showcasing Pryv AI with noir-themed detective office",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . -p 8000",
+    "build": "echo 'No build step required for static site'",
+    "deploy": "echo 'Deployment handled by GitHub Actions'"
+  },
+  "keywords": [
+    "threejs",
+    "3d",
+    "interactive",
+    "webgl",
+    "noir",
+    "detective",
+    "ai",
+    "pryv",
+    "pryvai"
+  ],
+  "author": "Pryv AI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/pryvai.git"
+  },
+  "homepage": "https://your-username.github.io/pryvai/",
+  "bugs": {
+    "url": "https://github.com/your-username/pryvai/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
