@@ -155,6 +155,7 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #ffffff;
         }
 
         .newspaper::-webkit-scrollbar {
@@ -222,6 +223,11 @@
             border-left: 3px solid rgba(255, 255, 255, 0.3);
             padding: 15px;
             margin: 20px 0;
+            color: #ffffff !important;
+        }
+
+        .highlight-box * {
+            color: #ffffff !important;
         }
 
         .quote {
@@ -311,6 +317,17 @@
         .warning-text {
             font-weight: bold;
             color: #ffffff;
+        }
+
+        /* Universal white text for all content in newspaper and agent menus */
+        .newspaper *, #agent-menu * {
+            color: #ffffff !important;
+        }
+
+        /* Override any inherited black text */
+        .newspaper p, .newspaper div, .newspaper span, .newspaper li,
+        #agent-menu p, #agent-menu div, #agent-menu span, #agent-menu li {
+            color: #ffffff !important;
         }
 
         .page-number {
