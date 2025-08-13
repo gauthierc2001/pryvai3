@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pryv AI</title>
-    <link rel="icon" type="image/jpeg" href="./public/newlogo.jpg">
+    <link rel="icon" type="image/jpeg" href="public/newlogo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -262,9 +262,33 @@
             font-weight: 600;
         }
 
+        .newspaper p {
+            color: #ffffff !important;
+        }
+
+        .newspaper div {
+            color: #ffffff !important;
+        }
+
+        .newspaper span {
+            color: #ffffff !important;
+        }
+
         .agent-interface strong {
             color: #ffffff;
             font-weight: 600;
+        }
+
+        .agent-interface p {
+            color: #ffffff !important;
+        }
+
+        .agent-interface div {
+            color: #ffffff !important;
+        }
+
+        .agent-interface span {
+            color: #ffffff !important;
         }
 
         #agent-menu strong {
@@ -272,40 +296,15 @@
             font-weight: 600;
         }
 
-        /* Ensure all text in newspaper and agent sections is white */
-        .newspaper,
-        .newspaper *,
-        #agent-menu,
-        #agent-menu *,
-        #docs-menu,
-        #docs-menu * {
+        #agent-menu p {
             color: #ffffff !important;
         }
 
-        /* Specific overrides for better readability */
-        .newspaper p,
-        .newspaper div,
-        .newspaper span,
-        #agent-menu p,
-        #agent-menu div,
-        #agent-menu span,
-        #docs-menu p,
-        #docs-menu div,
-        #docs-menu span {
+        #agent-menu div {
             color: #ffffff !important;
         }
 
-        /* Force white text for any dynamically generated content */
-        .newspaper .section-text,
-        .newspaper .highlight-box,
-        .newspaper .quote,
-        .newspaper .feature-list li,
-        #agent-menu .section-text,
-        #agent-menu .highlight-box,
-        #agent-menu .quote,
-        #docs-menu .section-text,
-        #docs-menu .highlight-box,
-        #docs-menu .quote {
+        #agent-menu span {
             color: #ffffff !important;
         }
 
@@ -1147,9 +1146,9 @@
 </head>
 <body>
     <div id="scene-container"></div>
-    <img src="./public/newlogo.jpg" alt="Pryv AI Logo" class="corner-logo">
+    <img src="public/newlogo.jpg" alt="Pryv AI Logo" class="corner-logo">
     <div class="loading-screen">
-        <img src="./public/newlogo.jpg" alt="Pryv AI Logo" class="welcome-logo">
+        <img src="public/newlogo.jpg" alt="Pryv AI Logo" class="welcome-logo">
         <h1 class="welcome-text">Welcome to Pryv AI</h1>
         <p class="welcome-subtitle">When systems are built to hide, you need one built to see</p>
         <div class="loading-spinner"></div>
@@ -1157,33 +1156,33 @@
 
     <!-- Background Audio -->
     <audio id="background-audio" preload="metadata" loop style="display: none;">
-        <source src="./sound/noir-ambience.mp3" type="audio/mpeg">
-        <source src="./sound/noir-ambience.mp3" type="audio/mp3">
+        <source src="sound/noir-ambience.mp3" type="audio/mpeg">
+        <source src="sound/noir-ambience.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Paper Sound Effect -->
     <audio id="paper-sound" preload="auto" style="display: none;">
-        <source src="./sound/paper.mp3" type="audio/mpeg">
-        <source src="./sound/paper.wav" type="audio/wav">
+        <source src="sound/paper.mp3" type="audio/mpeg">
+        <source src="sound/paper.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Glass Sound Effect -->
     <audio id="glass-sound" preload="auto" style="display: none;">
-        <source src="./sound/glass.wav" type="audio/wav">
+        <source src="sound/glass.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Typewriter Sound Effect -->
     <audio id="typewrite-sound" preload="auto" style="display: none;">
-        <source src="./sound/typewriter.wav" type="audio/wav">
+        <source src="sound/typewriter.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Agent Sound Effect -->
     <audio id="agent-sound" preload="auto" style="display: none;">
-        <source src="./sound/agent.wav" type="audio/wav">
+        <source src="sound/agent.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
 
